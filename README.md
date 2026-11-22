@@ -394,7 +394,7 @@ The dump (`mediroza_db_backup_2019.sql`) contained two tables with highly sensit
 | 9 | Michael Roberts | 6.0% | 60,000 | Ordinary |
 | 10 | Dr. Vikram Chetty | 4.0% | 40,000 | Preferential |
 
-> The raw `mediroza_db_backup_2019.sql` dump is preserved in this repository as [`OLD-BACKUP.sql`](OLD-BACKUP.sql) for proof of exploitation.
+> The raw `mediroza_db_backup_2019.sql` dump is preserved in this repository as [`mediroza_db_backup_2019.sql`](mediroza_db_backup_2019.sql) for proof of exploitation.
 
 ---
 
