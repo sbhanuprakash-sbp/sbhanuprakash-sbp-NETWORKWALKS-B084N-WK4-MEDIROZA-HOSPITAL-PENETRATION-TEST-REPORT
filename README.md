@@ -259,7 +259,7 @@ Navigating to the **Patient Portal** (`/patient/login.php`) and submitting a sin
 This confirmed the login form was vulnerable to **SQL Injection**. A classic boolean-based bypass payload was then submitted:
 
 * **Username**: `admin' -- `
-* **Password**: *(arbitrary value)*
+* **Password**: *password*
 
 ![Authentication bypass payload submitted](evidence/SQL-INJECTION.png)
 
