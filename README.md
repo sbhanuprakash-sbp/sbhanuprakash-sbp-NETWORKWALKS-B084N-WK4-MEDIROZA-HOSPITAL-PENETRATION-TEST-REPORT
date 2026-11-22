@@ -487,7 +487,7 @@ This project was performed strictly for educational purposes as part of the Netw
 
 ## 👤 Author
 
-**S Bhanu Prakash**
+**S Bhanu Prakash**  \
 B.Tech Student | Cybersecurity Intern, NetworkWalks (Batch B084N)
 
 GitHub: [https://github.com/sbhanuprakash-sbp](https://github.com/sbhanuprakash-sbp)   \
