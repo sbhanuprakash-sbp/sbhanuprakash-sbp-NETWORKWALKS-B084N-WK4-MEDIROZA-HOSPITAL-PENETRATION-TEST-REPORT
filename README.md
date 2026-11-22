@@ -180,10 +180,10 @@ See: WHOIS.txt, DIG-NS.txt, DIG-RESULT.txt, CURL-RESULT.txt, WHATWEB.txt
 ```
 </details>
 
-![WHOIS lookup result](evidence/WHOIS.png)
-![DNS NS record lookup](evidence/DIG-NS.png)
+![WHOIS lookup result](evidence/WHOIS-RESULT.png)
+![DNS NS record lookup](evidence/DIG-NS-RESULT.png)
 ![curl HEAD response](evidence/CURL-RESULT.png)
-![WhatWeb fingerprint](evidence/WHATWEB.png)
+![WhatWeb fingerprint](evidence/WHATWEB-RESULT.png)
 
 ---
 
@@ -220,7 +220,7 @@ See: NMAP_RESULT.txt
 ```
 </details>
 
-![Nmap full port scan](evidence/NMAP_RESULT.png)
+![Nmap full port scan](evidence/NMAP-RESULT.png)
 
 ---
 
@@ -244,7 +244,7 @@ Key results:
 | `/.git`, `/.env`, `/.htaccess`, `/cpanel`, `/webmail`, `/server-status` | 403 | Present but access-restricted |
 | `/staff`, `/cgi-bin`, `/mailman`, `/pipermail` | 301 | Additional unlinked directories |
 
-![Gobuster directory enumeration](evidence/GO-BUSTER.png)
+![Gobuster directory enumeration](evidence/GOBUSTER.png)
 
 ---
 
