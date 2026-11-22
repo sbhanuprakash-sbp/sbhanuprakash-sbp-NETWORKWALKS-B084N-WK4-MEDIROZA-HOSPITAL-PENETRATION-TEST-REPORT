@@ -1,6 +1,6 @@
 <div align="center">
 
-# NETWORKWALKS-B084-WEEK4-MEDIROZA-GENERAL-HOSPITAL-PENETRATION-TEST-PROJECT
+# NETWORKWALKS-B084N-WEEK4-MEDIROZA-GENERAL-HOSPITAL-PENETRATION-TESTING
 
 ## WEEK 4 | PROJECT MODULE
 
@@ -52,7 +52,7 @@
 | **Project** | Week 4 – Web Application Penetration Testing |
 | **Project Title** | Black-Box Penetration Test of Mediroza General Hospital |
 | **Intern Name** | S Bhanu Prakash |
-| **Program** | NetworkWalks Cybersecurity Internship (Batch B084) |
+| **Program** | NetworkWalks Cybersecurity Internship (Batch B084N) |
 | **Client (Simulated)** | Mediroza General Hospital |
 | **Target** | `https://medirozahospital.com` |
 | **Target IP** | `199.188.201.16` |
@@ -134,7 +134,19 @@ This assessment was performed as a black-box penetration test against **Mediroza
 
 ### M1 — Reconnaissance & Initial Access
 
-#### 1. Domain, DNS and Host Fingerprinting
+#### 1. Initial Site Access
+
+Before any active enumeration, the target was browsed manually to understand what Mediroza General Hospital presented publicly. The homepage described the hospital as serving Johannesburg since 2003 with 40+ specialists across cardiology, emergency care, pediatrics, radiology and pathology, and linked out to an **About**, **Doctors**, **Contact**, and — notably — a **Patient Portal**, which became the focus of later exploitation (see Section 5, SQL Injection & Authentication Bypass).
+
+![Mediroza General Hospital homepage](evidence/MEDIROZA-INDEX.png)
+
+The **About** page reinforced the same profile — a 250-bed general hospital, SANAS-accredited diagnostics lab — useful context for understanding the sensitivity of the data later exposed in Milestone 3.
+
+![Mediroza General Hospital About page](evidence/MEDIROZA-ABOUT.png)
+
+---
+
+#### 2. Domain, DNS and Host Fingerprinting
 
 `whois` confirmed the domain is registered through **NameCheap, Inc.**, with WHOIS privacy enabled via *WithheldForPrivacy LLC*, created on `2026-08-14`.
 
@@ -175,7 +187,7 @@ See: WHOIS.txt, DIG-NS.txt, DIG-RESULT.txt, CURL-RESULT.txt, WHATWEB.txt
 
 ---
 
-#### 2. Full Port & Service Scan
+#### 3. Full Port & Service Scan
 
 A full TCP port scan with service/version detection was run against the resolved IP:
 
@@ -212,7 +224,7 @@ See: NMAP_RESULT.txt
 
 ---
 
-#### 3. Directory & File Enumeration
+#### 4. Directory & File Enumeration
 
 `gobuster` was run against the target with the SecLists `common.txt` wordlist:
 
@@ -236,20 +248,20 @@ Key results:
 
 ---
 
-#### 4. SQL Injection & Authentication Bypass
+#### 5. SQL Injection & Authentication Bypass
 
 Navigating to the **Patient Portal** (`/patient/login.php`) and submitting a single quote (`'`) into the login form triggered an unhandled database exception:
 
 > `Warning: mysqli_query(): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '...' at line 1`
 
-![SQL error exposed on login](evidence/login-sql-error.png)
+![SQL error exposed on login](evidence/SQL-IDENTIFIED.png)
 
 This confirmed the login form was vulnerable to **SQL Injection**. A classic boolean-based bypass payload was then submitted:
 
 * **Username**: `admin' -- `
 * **Password**: *(arbitrary value)*
 
-![Authentication bypass payload submitted](evidence/login-sqli-payload.png)
+![Authentication bypass payload submitted](evidence/SQL-INJECTION.png)
 
 This completely bypassed authentication, granting unauthorized access to `/patient/portal.php` — **"My lab reports"** — exposing three downloadable, encrypted patient PDF files:
 
@@ -257,7 +269,7 @@ This completely bypassed authentication, granting unauthorized access to `/patie
 2. `Pathology Report - P. Reddy` — Lab Ref `LR-2024-1192`
 3. `Pathology Report - E. Thompson` — Lab Ref `LR-2024-1205`
 
-![Patient Portal accessed - three lab reports exposed](evidence/patient-portal.png)
+![Patient Portal accessed - three lab reports exposed](evidence/FOUND-REPORTS.png)
 
 ---
 
@@ -281,7 +293,7 @@ Warning    : Document is password protected (use Password option)
 
 A crackable `$pdf$` hash (pdf2john/hashcat-compatible format) was extracted for each file using the **NetworkWalks Hash Calculator**, which parses the PDF locally in-browser:
 
-![NetworkWalks Hash Calculator extracting the hash](evidence/hash-calculator.png)
+![NetworkWalks Hash Calculator extracting the hash](evidence/HASH-EXTRACTION.png)
 
 Each hash was then run through the **NetworkWalks Password Cracker**, a dictionary-attack tool using the same principle as John the Ripper:
 
@@ -291,9 +303,9 @@ Each hash was then run through the **NetworkWalks Password Cracker**, a dictiona
 | `patient_report_2.pdf` | `password` | 2 / 100 | Cracked almost instantly |
 | `patient_report_3.pdf` | `!@#$%^&` | 3546 / 3556 | Required the full wordlist — stronger, special-character password |
 
-![Dictionary attack match - PDF1 (123456)](evidence/cracker-pdf1.png)
-![Dictionary attack match - PDF2 (password)](evidence/cracker-pdf2.png)
-![Dictionary attack match - PDF3 (!@#$%^&)](evidence/cracker-pdf3.png)
+![Dictionary attack match - PDF1 (123456)](evidence/REPORT1-CRACKED.png)
+![Dictionary attack match - PDF2 (password)](evidence/REPORT2-CRACKED.png)
+![Dictionary attack match - PDF3 (!@#$%^&)](evidence/REPORT2-CRACKED.png)
 
 All three passwords were verified by successfully opening their respective original PDFs.
 
@@ -324,13 +336,13 @@ This internal comment — left behind by an IT staff member — directly disclos
 https://medirozahospital.com/old/mediroza_db_backup_2019.sql
 ```
 
-![Index of /old/ exposing the database backup file](evidence/index-of-old.png)
+![Index of /old/ exposing the database backup file](evidence/OLD-PAGE.png)
+
+![The database backup file page](evidence/OLD-BACKUP.png)
 
 #### Exfiltrated Database Contents
 
 The dump (`mediroza_db_backup_2019.sql`) contained two tables with highly sensitive, confidential data. Per the engagement deliverable (Find the salaries of all hospital employees; find the shareholder details), the full recovered contents are reproduced below as proof of exploitation and impact.
-
-![Database backup file listed and downloadable](evidence/old-backup.png)
 
 ##### A. Staff Records — Salaries & PII (`staff` table, 30 records)
 
@@ -476,7 +488,7 @@ This project was performed strictly for educational purposes as part of the Netw
 ## 👤 Author
 
 **S Bhanu Prakash**
-B.Tech Student | Cybersecurity Intern, NetworkWalks (Batch B084)
+B.Tech Student | Cybersecurity Intern, NetworkWalks (Batch B084N)
 
 GitHub: [https://github.com/sbhanuprakash-sbp](https://github.com/sbhanuprakash-sbp)
 LinkedIn: [https://www.linkedin.com/in/s-bhanu-prakash/](https://www.linkedin.com/in/s-bhanu-prakash/)
